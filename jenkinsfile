@@ -1,0 +1,71 @@
+pipeline{
+    agent {
+        label 'AGENT-1'
+    }
+    options{
+        timeout(time:10, unit:'Minutes')
+    }
+    parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Select Terraform action'
+        )
+    }
+    stages{
+        stage("init"){
+            steps{
+                sh """
+                   cd 01-vpc
+                   terraform init
+                """
+            }
+        }
+        stage("plan"){
+            when{
+                expression{params.ACTION == 'apply'}
+            }
+            steps{
+                sh """
+                   cd 01-vpc
+                   terraform plan
+                """
+            }
+        }
+        stage("apply"){
+
+        when{
+            expression{params.ACTION == 'apply'}
+        }
+        input{
+                message "should we continue ?"
+                ok "yes, continue"
+            }
+            steps{
+                sh """
+                   cd 01-vpc
+                   terraform apply -auto-approve
+                """
+            }
+          }
+
+         stage("destroy"){
+
+        when{
+            expression{ params.ACTION == 'destroy'}
+        }
+        input{
+                message "should we continue ?"
+                ok "yes, continue"
+            }
+            steps{
+                sh """
+                   cd 01-vpc
+                   terraform destroy -auto-approve
+                """
+            }
+          }    
+        }
+        
+    }
+}

@@ -1,0 +1,78 @@
+- name : sg-rules
+  available-sg's : 
+  - expense-dev-db
+  - expense-dev-backend
+  - expense-dev-frontend
+  - expense-dev-bastion
+  - expense-dev-alb
+  - expense-dev-vpn
+  - expense-dev-web-alb
+  vpn:
+  - name : public_to_vpn
+    desc:  public connecting to vpn
+    src:   public
+    port:  943, 443, 22 , 1194
+
+  app_alb:
+  - name:  vpn_to_app_alb
+    desc:  vpn connecting to app_alb
+    src:   vpn 
+    port:  80  
+
+  db:
+  - name : backend_to_db
+    desc:  backend connecting to db
+    src:   backend
+    port:  3306
+  - name : bastion_to_db
+    desc:  bastion connecting to db
+    src:   bastion
+    port:  3306 
+  - name : vpn_to_db
+    desc:  vpn connecting to db
+    src:   vpn
+    port:  3306
+
+  backend:
+  - name : bastion_to_backend
+    desc:  bastion connecting to backend
+    src:   bastion
+    port:  22
+  - name : app_alb_to_backend
+    desc:  app_alb connecting to backend
+    src:   app_alb
+    port:  8080
+  - name : vpn_to_backend_via_ssh
+    desc:  vpn connecting to backend via ssh 
+    src:   vpn
+    port:  22
+  - name : vpn_to_backend_via_http
+    desc:  vpn connecting to backend via http 
+    src:   vpn
+    port:  8080
+
+  frontend:
+  - name : public_to_frontend
+    desc:  public connecting to frontend
+    src:   public
+    port:  80
+  - name : bastion_to_frontend
+    desc:  bastion connecting to frontend
+    src:   bastion
+    port:  22
+ 
+  bastion :
+  - name : public_to_bastion
+    desc:  public connecting o bastion
+    src:   ["0.0.0.0/0"]
+  
+  web-alb :
+  - name:  public_to_web_alb_http
+    desc:  public connecting to web_alb via http 
+    src:   ["0.0.0.0/0"]
+    port:  80
+  
+  - name:  public_to_web_alb_https
+    desc:  public connecting to web_alb via https 
+    src:   ["0.0.0.0/0"]
+    port:  443
