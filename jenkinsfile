@@ -17,9 +17,7 @@ pipeline{
         stage("init"){
             steps{
 
-                when {
-        beforeInput true
-        expression { params.ACTION == 'apply' }
+                
                 sh """
                    cd 01-vpc
                    terraform init -reconfigure
