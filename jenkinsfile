@@ -4,7 +4,7 @@ pipeline{
     }
     options{
         timeout(time:10, unit:'MINUTES')
-        Ansicolor('xterm')
+        ansicolor('xterm')
     }
     parameters {
         choice(
@@ -18,7 +18,7 @@ pipeline{
             steps{
                 sh """
                    cd 01-vpc
-                   terraform init
+                   terraform init -reconfigure
                 """
             }
         }
