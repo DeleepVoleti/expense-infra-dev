@@ -55,10 +55,6 @@ pipeline{
         when{
             expression{ params.ACTION == 'destroy'}
         }
-        input{
-                message "should we continue ?"
-                ok "yes, continue"
-            }
             steps{
                 sh """
                    cd 01-vpc
