@@ -15,3 +15,8 @@ variable "env" {
     type = string
     default = "dev"
 }
+
+variable "testing" {
+    type = string
+    default = "just for testing"
+}
