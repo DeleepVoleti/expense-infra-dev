@@ -18,7 +18,10 @@
     desc:  vpn connecting to app_alb
     src:   vpn 
     port:  80  
-
+  - name:  all_to_app_alb
+    desc:  all connecting to app_alb #created this normally to test without using vpn from laptop
+    src:   all
+    port:  80 
   db:
   - name : backend_to_db
     desc:  backend connecting to db
@@ -50,6 +53,10 @@
     desc:  vpn connecting to backend via http 
     src:   vpn
     port:  8080
+  - name : default_vpc_to_backend #created for jenkins
+    desc:  for jenkins agent to connect to backend  
+    src:   default vpc
+    port:  22   
 
   frontend:
   - name : public_to_frontend
@@ -60,7 +67,13 @@
     desc:  bastion connecting to frontend
     src:   bastion
     port:  22
- 
+  - name : default_vpc_to_frontend #created for jenkins
+    desc:  for jenkins agent to connect to frontend 
+    src:   default vpc
+    port:  22 
+
+
+
   bastion :
   - name : public_to_bastion
     desc:  public connecting o bastion

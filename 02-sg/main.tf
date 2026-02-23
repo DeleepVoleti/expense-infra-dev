@@ -68,6 +68,25 @@ resource "aws_security_group_rule" "vpn_to_app_alb" {
   security_group_id = module.app_alb.sg_id
 }
 
+resource "aws_security_group_rule" "all_to_app_alb" {  #created this normally to use from laptop without vpn
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.app_alb.sg_id
+}
+
+resource "aws_security_group_rule" "web_alb_to_app_alb" {  #created this normally to use from laptop without vpn
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.web_alb.sg_id
+  security_group_id = module.app_alb.sg_id
+}
+
+
 # web_alb ##################################################################
 resource "aws_security_group_rule" "public_to_web_alb_http" {
   type              = "ingress"
@@ -151,15 +170,25 @@ resource "aws_security_group_rule" "vpn_to_backend_http" {
   source_security_group_id = module.vpn.sg_id
   security_group_id = module.backend.sg_id
 }
+
+resource "aws_security_group_rule" "deafult_vpc_to_backend" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["172.31.0.0/16"]
+  security_group_id = module.backend.sg_id
+}
+
 #### frontend ###########################################################################################
-# resource "aws_security_group_rule" "public_to_frontend" {  
-#   type              = "ingress"
-#   from_port         = 80
-#   to_port           = 80
-#   protocol          = "tcp"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = module.frontend.sg_id
-# }                                                          
+resource "aws_security_group_rule" "public_to_frontend" {  
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.frontend.sg_id
+}                                                          
 
 resource "aws_security_group_rule" "bastion_to_frontend" { 
   type              = "ingress"
@@ -167,6 +196,15 @@ resource "aws_security_group_rule" "bastion_to_frontend" {
   to_port           = 22
   protocol          = "tcp"
   source_security_group_id = module.bastion.sg_id
+  security_group_id = module.frontend.sg_id
+}
+
+resource "aws_security_group_rule" "deafult_vpc_to_frontend" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["172.31.0.0/16"]
   security_group_id = module.frontend.sg_id
 }
 

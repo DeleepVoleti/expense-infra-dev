@@ -35,7 +35,7 @@ resource "null_resource" "configuring_backend" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/${var.common_tags.component}.sh",
-            "sudo sh /tmp/${var.common_tags.component}.sh ${var.common_tags.component} ${var.env}"
+            "sudo sh /tmp/${var.common_tags.component}.sh ${var.common_tags.component} ${var.env} "
         ]
     } 
 }
@@ -119,7 +119,7 @@ resource "aws_autoscaling_group" "backend" {
   instance_refresh {
     strategy = "Rolling"
     preferences {
-      min_healthy_percentage = 50
+      min_healthy_percentage = 80
     }
     triggers = ["launch_template"]
   }
@@ -151,7 +151,7 @@ resource "aws_autoscaling_policy" "backend" {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
 
-    target_value = 10.0
+    target_value = 80.0
   }
 }
 
